@@ -16,6 +16,9 @@
     <Filter Include="Model">
       <UniqueIdentifier>{174ef022-4898-45fd-8ba7-8c5ec1edd0d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Parser">
+      <UniqueIdentifier>{65fd97bf-9513-47d3-ab0b-c90301137c9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc2v2.cpp">

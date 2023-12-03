@@ -7,12 +7,12 @@
 int main()
 {
    // std::string str = "(sin(1)+cos(4))*tan(1)-acos(1)+asin(1)*atan(1)";
-   std::string str = "sqrt(-4)";
+   std::string str = "sqrt(-1e3)";
 
     s21::Calculator calculator(str, 0);
-    calculator.Start();
-    double result = calculator.GetResult();
-        std::cout << std::fixed << std::setprecision(9) << result;
+    //calculator.Start();
+    std::string result = calculator.Execute();
+        std::cout << result;
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

@@ -14,11 +14,10 @@ namespace s21 {
 class Calculator {
  public:
   Calculator(std::string& expression, double x);
-  int Start();
-  double GetResult();
+  std::string Execute();
 
  private:
-  std::list<Node> digital_;
+  std::list<Node> tokens_;
   std::list<Node> rpn_;
   std::list<Node> stack_;
 
@@ -29,8 +28,9 @@ class Calculator {
 
   int Parse();
   int CreateNumber();
-  void ParseAction(int action, int operand);
+  int ParseAction(int action, int operand);
   int CreateRPN();
+  double GetResult();
   double CalculateAction(double first_operand, double second_operand, Actions action);
   int Calculate();
   void CheckAction(int action, int operand);

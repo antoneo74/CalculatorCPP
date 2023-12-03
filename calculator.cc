@@ -6,7 +6,7 @@ s21::Calculator::Calculator(std::string& expression, double x)
 	index_ = 0;
 }
 
-int s21::Calculator::Start() {
+std::string s21::Calculator::Execute() {
 	int error = Parse();
 	if (!error) {
 		error = CreateRPN();
@@ -14,7 +14,8 @@ int s21::Calculator::Start() {
 			error = Calculate();
 		}
 	}
-	return error;
+	std::string result = error ? "Error" : std::to_string(GetResult());
+	return result;
 }
 
 int s21::Calculator::Parse() {
@@ -25,7 +26,7 @@ int s21::Calculator::Parse() {
 	for (; index_ < str_.size() && !error; ) {
 		if (str_[index_] == 'X') {
 			CheckAction(action, operand);
-			digital_.push_back(Node{ Actions::kNumber, Priority::kLowest, false, x_value_ });
+			tokens_.push_back(Node{ Actions::kNumber, Priority::kLowest, false, x_value_ });
 			action = 0;
 			operand = 1;
 			++index_;
@@ -38,7 +39,8 @@ int s21::Calculator::Parse() {
 			action = 0;
 		}
 		else if (str_[index_] == ')') {
-			ParseAction(action, operand);
+			error = ParseAction(action, operand);
+			if (error) break;
 			operand = 1;
 			action = 0;
 		}
@@ -46,18 +48,19 @@ int s21::Calculator::Parse() {
 			++index_;
 		}
 		else {
-			ParseAction(action, operand);
+			error = ParseAction(action, operand);
+			if (error) break;
 			action = 1;
 			operand = 0;
 		}
 	}
-	if (error) digital_.clear();
+	if (error) tokens_.clear();
 	return error;
 }
 
 void s21::Calculator::CheckAction(int action, int operand) {
 	if (operand && !action) {
-		digital_.push_back(Node{ Actions::kMul, Priority::kMedium, true, 0 });
+		tokens_.push_back(Node{ Actions::kMul, Priority::kMedium, true, 0 });
 	}
 }
 
@@ -66,7 +69,7 @@ int s21::Calculator::CreateNumber() {
 		size_t end = index_;
 		std::string str = str_.substr(index_);
 		double number = std::stod(str, &end);
-		digital_.push_back(Node{ Actions::kNumber, Priority::kLowest, false, number });
+		tokens_.push_back(Node{ Actions::kNumber, Priority::kLowest, false, number });
 		index_ = index_ + end;
 		return 0;
 	}
@@ -75,100 +78,105 @@ int s21::Calculator::CreateNumber() {
 	}
 }
 
-void s21::Calculator::ParseAction(int action_is_active, int operand) {
+int s21::Calculator::ParseAction(int action_is_active, int operand) {
+	int error = 0;
 	if (str_.substr(index_, 3) == "sin") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kSin, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kSin, Priority::kHigh, false, 0 });
 		index_ += 3;
 	}
 	else if (str_.substr(index_, 3) == "cos") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kCos, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kCos, Priority::kHigh, false, 0 });
 		index_ += 3;
 	}
 	else if (str_.substr(index_, 3) == "tan") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kTan, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kTan, Priority::kHigh, false, 0 });
 		index_ += 3;
 	}
 	else if (str_.substr(index_, 3) == "mod") {
-		digital_.push_back(Node{ Actions::kFmod, Priority::kMedium, true, 0 });
+		tokens_.push_back(Node{ Actions::kFmod, Priority::kMedium, true, 0 });
 		index_ += 3;
 	}
 	else if (str_.substr(index_, 2) == "ln") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kLog, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kLog, Priority::kHigh, false, 0 });
 		index_ += 2;
 	}
 	else if (str_.substr(index_, 3) == "log") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kLog10, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kLog10, Priority::kHigh, false, 0 });
 		index_ += 3;
 	}
 	else if (str_.substr(index_, 4) == "asin") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kAsin, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kAsin, Priority::kHigh, false, 0 });
 		index_ += 4;
 	}
 	else if (str_.substr(index_, 4) == "acos") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kAcos, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kAcos, Priority::kHigh, false, 0 });
 		index_ += 4;
 	}
 	else if (str_.substr(index_, 4) == "atan") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kAtan, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kAtan, Priority::kHigh, false, 0 });
 		index_ += 4;
 	}
 	else if (str_.substr(index_, 4) == "sqrt") {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kSqrt, Priority::kHigh, false, 0 });
+		tokens_.push_back(Node{ Actions::kSqrt, Priority::kHigh, false, 0 });
 		index_ += 4;
 	}
 	else if (str_[index_] == '(') {
 		CheckAction(action_is_active, operand);
-		digital_.push_back(Node{ Actions::kOpeningBracket, Priority::kLowest, false, 0 });
+		tokens_.push_back(Node{ Actions::kOpeningBracket, Priority::kLowest, false, 0 });
 		++index_;
 	}
 	else if (str_[index_] == ')') {
-		digital_.push_back(Node{ Actions::kClosingBracket, Priority::kLowest, false, 0 });
+		tokens_.push_back(Node{ Actions::kClosingBracket, Priority::kLowest, false, 0 });
 		++index_;
 	}
 	else if (str_[index_] == '+' || str_[index_] == '-') {
 		Actions action = str_[index_] == '-' ? Actions::kSub : Actions::kAdd;
 		if (action_is_active) {
-			digital_.push_back(Node{ action, Priority::kHighest, false, 0 });
+			tokens_.push_back(Node{ action, Priority::kHighest, false, 0 });
 		}
 		else {
-			digital_.push_back(Node{ action, Priority::kLow, true, 0 });
+			tokens_.push_back(Node{ action, Priority::kLow, true, 0 });
 		}
 		++index_;
 	}
 	else if (str_[index_] == '*' || str_[index_] == '/') {
 		Actions action = str_[index_] == '*' ? Actions::kMul : Actions::kDiv;
-		digital_.push_back(Node{ action, Priority::kMedium, true, 0 });
+		tokens_.push_back(Node{ action, Priority::kMedium, true, 0 });
 		++index_;
 	}
 	else if (str_[index_] == '^') {
-		digital_.push_back(Node{ Actions::kPow, Priority::kHigh, true, 0 });
+		tokens_.push_back(Node{ Actions::kPow, Priority::kHigh, true, 0 });
 		++index_;
 	}
+	else {
+		error = 1;
+	}
+	return error;
 }
 
 int s21::Calculator::CreateRPN() {
 	int error = 0;
-	while (!digital_.empty() && !error) {
-		if (digital_.begin()->action == Actions::kNumber) {
-			rpn_.push_back(digital_.front());
+	while (!tokens_.empty() && !error) {
+		if (tokens_.begin()->action == Actions::kNumber) {
+			rpn_.push_back(tokens_.front());
 		}
-		else if (digital_.begin()->action == Actions::kSin || digital_.begin()->action == Actions::kCos ||
-			digital_.begin()->action == Actions::kTan || digital_.begin()->action == Actions::kAsin ||
-			digital_.begin()->action == Actions::kAcos || digital_.begin()->action == Actions::kAtan ||
-			digital_.begin()->action == Actions::kLog || digital_.begin()->action == Actions::kLog10 ||
-			digital_.begin()->action == Actions::kSqrt || digital_.begin()->action == Actions::kOpeningBracket) {
-			stack_.push_front(digital_.front());
+		else if (tokens_.begin()->action == Actions::kSin || tokens_.begin()->action == Actions::kCos ||
+			tokens_.begin()->action == Actions::kTan || tokens_.begin()->action == Actions::kAsin ||
+			tokens_.begin()->action == Actions::kAcos || tokens_.begin()->action == Actions::kAtan ||
+			tokens_.begin()->action == Actions::kLog || tokens_.begin()->action == Actions::kLog10 ||
+			tokens_.begin()->action == Actions::kSqrt || tokens_.begin()->action == Actions::kOpeningBracket) {
+			stack_.push_front(tokens_.front());
 		}
-		else if (digital_.begin()->action == Actions::kClosingBracket) {
+		else if (tokens_.begin()->action == Actions::kClosingBracket) {
 			while (!stack_.empty() && stack_.begin()->action != Actions::kOpeningBracket) {
 				rpn_.push_back(stack_.front());
 				stack_.pop_front();
@@ -180,13 +188,13 @@ int s21::Calculator::CreateRPN() {
 		}
 		else {
 			while (!stack_.empty() &&
-				digital_.begin()->priority <= stack_.begin()->priority) {
+				tokens_.begin()->priority <= stack_.begin()->priority) {
 				rpn_.push_back(stack_.front());
 				stack_.pop_front();
 			}
-			stack_.push_front(digital_.front());
+			stack_.push_front(tokens_.front());
 		}
-		digital_.pop_front();
+		tokens_.pop_front();
 	}
 	if (!stack_.empty() && !error) {
 		while (!stack_.empty()) {
@@ -199,7 +207,7 @@ int s21::Calculator::CreateRPN() {
 		}
 	}
 	if (error) {
-		digital_.clear();
+		tokens_.clear();
 		rpn_.clear();
 		stack_.clear();
 	}
@@ -274,8 +282,8 @@ int s21::Calculator::Calculate() {
 					Actions action = rpn_.begin()->action;
 					int binary = rpn_.begin()->binary;
 
-					if ((action == '+' || action == '-') && !binary) {
-						stack_.begin()->value = (action == '-' ? -stack_.begin()->value
+					if ((action == Actions::kAdd || action == Actions::kSub) && !binary) {
+						stack_.begin()->value = (action == Actions::kSub ? -stack_.begin()->value
 							: stack_.begin()->value);
 					}
 					else {
