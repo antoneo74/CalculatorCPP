@@ -1,4 +1,5 @@
 #ifndef CPP3_SMARTCALC_MODEL_PRIORITY_H
+#define CPP3_SMARTCALC_MODEL_PRIORITY_H
 
 namespace s21 {
 	enum Priority

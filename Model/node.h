@@ -1,4 +1,5 @@
 #ifndef CPP3_SMARTCALC_MODEL_NODE_H
+#define CPP3_SMARTCALC_MODEL_NODE_H
 
 namespace s21 {
 	class Node {

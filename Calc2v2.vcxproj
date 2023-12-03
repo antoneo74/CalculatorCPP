@@ -129,12 +129,14 @@
   <ItemGroup>
     <ClCompile Include="Calc2v2.cpp" />
     <ClCompile Include="calculator.cc" />
+    <ClCompile Include="parser.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="calculator.h" />
     <ClInclude Include="Model\actions.h" />
     <ClInclude Include="Model\node.h" />
     <ClInclude Include="Model\priority.h" />
+    <ClInclude Include="parser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

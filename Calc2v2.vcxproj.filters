@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Model">
-      <UniqueIdentifier>{174ef022-4898-45fd-8ba7-8c5ec1edd0d5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Parser">
       <UniqueIdentifier>{65fd97bf-9513-47d3-ab0b-c90301137c9f}</UniqueIdentifier>
     </Filter>
@@ -27,19 +24,25 @@
     <ClCompile Include="calculator.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="parser.cc">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="calculator.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="priority.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Model\actions.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="node.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Model\node.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="actions.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Model\priority.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

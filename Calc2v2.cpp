@@ -7,7 +7,7 @@
 int main()
 {
    // std::string str = "(sin(1)+cos(4))*tan(1)-acos(1)+asin(1)*atan(1)";
-   std::string str = "sqrt(-1e3)";
+   std::string str = "(1e3)2";
 
     s21::Calculator calculator(str, 0);
     //calculator.Start();

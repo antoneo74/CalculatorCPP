@@ -1,4 +1,6 @@
 #ifndef CPP3_SMARTCALC_MODEL_ACTIONS_H
+#define CPP3_SMARTCALC_MODEL_ACTIONS_H
+
 namespace s21 {
 	enum Actions {
 		kAdd,
