@@ -1,7 +1,7 @@
 #include "parser.h"
 using namespace s21;
 
-std::pair<std::list<Node>, int> Parser::GetResult(const std::string expresion, double x_value) {
+std::pair<std::list<Node>, bool> Parser::GetResult(const std::string expresion, double x_value) {
 	Initialization(expresion, x_value);
 	return std::make_pair(tokens_, Parse());
 }
