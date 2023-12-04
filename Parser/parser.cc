@@ -1,16 +1,26 @@
 #include "parser.h"
 using namespace s21;
 
-std::pair<std::list<Node>, int> Parser::GetResult() {
+std::pair<std::list<Node>, int> Parser::GetResult(const std::string expresion, double x_value) {
+	Initialization(expresion, x_value);
 	return std::make_pair(tokens_, Parse());
 }
 
-int Parser::Parse() {
+void s21::Parser::Initialization(const std::string expresion, double x_value) {
+	expresion_ = expresion;
+	x_value_ = x_value;
+	index_ = 0;
+	if (!tokens_.empty()) {
+		tokens_.clear();
+	}
+}
+
+bool Parser::Parse() {
 	int error = 0;
 	int action = 1;
 	int operand = 0;
 
-	for (; index_ < expresion_.size() && !error; ) {
+	while (index_ < expresion_.size()) {
 		if (expresion_[index_] == 'X') {
 			CheckAction(action, operand);
 			tokens_.push_back(Node{ Actions::kNumber, Priority::kLowest, false, x_value_ });
@@ -21,13 +31,11 @@ int Parser::Parse() {
 		else if (expresion_[index_] == '.' || std::isdigit(expresion_[index_])) {
 			CheckAction(action, operand);
 			error = CreateNumber();
-			if (error) break;
 			operand = 1;
 			action = 0;
 		}
 		else if (expresion_[index_] == ')') {
 			error = ParseAction(action, operand);
-			if (error) break;
 			operand = 1;
 			action = 0;
 		}
@@ -36,12 +44,11 @@ int Parser::Parse() {
 		}
 		else {
 			error = ParseAction(action, operand);
-			if (error) break;
 			action = 1;
 			operand = 0;
 		}
+		if (error) return error;
 	}
-	if (error) tokens_.clear();
 	return error;
 }
 
@@ -51,7 +58,7 @@ void Parser::CheckAction(int action, int operand) {
 	}
 }
 
-int Parser::CreateNumber() {
+bool Parser::CreateNumber() {
 	try {
 		size_t end = index_;
 		std::string str = expresion_.substr(index_);
@@ -65,7 +72,7 @@ int Parser::CreateNumber() {
 	}
 }
 
-int Parser::ParseAction(int action_is_active, int operand) {
+bool Parser::ParseAction(int action_is_active, int operand) {
 	int error = 0;
 	if (expresion_.substr(index_, 3) == "sin") {
 		CheckAction(action_is_active, operand);

@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Parser">
-      <UniqueIdentifier>{65fd97bf-9513-47d3-ab0b-c90301137c9f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc2v2.cpp">
@@ -24,7 +21,10 @@
     <ClCompile Include="calculator.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="parser.cc">
+    <ClCompile Include="Parser\parser.cc">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\rpn.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,10 @@
     <ClInclude Include="Model\priority.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="parser.h">
+    <ClInclude Include="Parser\parser.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\rpn.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

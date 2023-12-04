@@ -2,27 +2,30 @@
 #define CPP3_SMARTCALC_CALCULATOR_H
 
 #include <cmath>
-#include "parser.h"
+#include "Parser/parser.h"
+#include "Parser/rpn.h"
 
 namespace s21 {
 
 	class Calculator {
 	public:
-		Calculator(std::string& expression, double x);
-		std::string Execute();
+		std::string Execute(std::string& expression, double x);
 
 	private:
 		std::list<Node> rpn_;
 		std::list<Node> stack_;
 		std::list<Node> tokens_;
 
-		double result_;
+		double result_ = 0;
 		Parser parser_;
+		Notation notation_;
 
-		int CreateRPN();
-		double GetResult();
 		double CalculateAction(double first_operand, double second_operand, Actions action);
-		int Calculate();
+		double GetResult();
+		bool Calculate();
+		bool CalculateItem(Node item);
+		void Clear();
+		std::pair<double, bool> GetValueFromStack();
 	};
 }  // namespace s21
 
